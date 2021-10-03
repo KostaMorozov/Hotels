@@ -13,6 +13,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Hotels.Configurations;
 using Hotels.Data;
+using Hotels.IRepository;
+using Hotels.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hotels
@@ -36,12 +38,16 @@ namespace Hotels
 
             services.AddAutoMapper(typeof(MapperInitilizer));
 
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Hotels", Version = "v1" });
             });
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(op => 
+                op.SerializerSettings.ReferenceLoopHandling = 
+                    Newtonsoft.Json.ReferenceLoopHandling.Ignore);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
